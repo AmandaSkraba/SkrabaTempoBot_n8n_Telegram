@@ -67,8 +67,6 @@ O nó HTTP Request utiliza a expressão:
 
 `{{ $env.OPENWEATHER_API_KEY }}`
 
-A chave não deve ser inserida diretamente no JSON exportado.
-
 ## 5. Variáveis de ambiente
 
 As variáveis esperadas pelo projeto são:

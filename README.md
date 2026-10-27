@@ -76,7 +76,7 @@ As variáveis esperadas pelo projeto são:
 | `OPENWEATHER_API_KEY` | Chave de acesso à API OpenWeather |
 | `TELEGRAM_BOT_TOKEN` | Token do bot do Telegram |
 
-Para uma instalação local com Docker Compose, crie um arquivo `.env` na pasta do projeto:
+Para uma instalação local com Docker Compose, utilize os environments:
 
 ```dotenv
 OPENWEATHER_API_KEY=sua_chave_openweather

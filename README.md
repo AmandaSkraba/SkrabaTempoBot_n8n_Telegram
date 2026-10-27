@@ -22,7 +22,7 @@ A temperatura e o emoji são ilustrativos. A resposta real depende das condiçõ
 
 Em caso de erro, o chatbot envia:
 
-`❌ Cidade não encontrada. Use o formato Cidade,UF,BR (ex.: São Paulo,SP,BR).`
+`❌ Cidade não encontrada. Use o formato Cidade, UF, BR (ex.: São Paulo, SP, BR).`
 
 ## 2. Tecnologias utilizadas
 

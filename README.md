@@ -98,8 +98,6 @@ O Docker Compose deve disponibilizar `OPENWEATHER_API_KEY` para o serviço n8n. 
 7. Configure a variável `OPENWEATHER_API_KEY` no ambiente do n8n.
 8. Salve o workflow.
 
-Os nomes dos nós e as conexões devem ser preservados durante a importação.
-
 ## 7. Como executar
 
 1. Abra o workflow importado.
@@ -109,7 +107,7 @@ Os nomes dos nós e as conexões devem ser preservados durante a importação.
 
 Exemplo:
 
-`Curitiba,PR,BR`
+`Curitiba, PR, BR`
 
 O chatbot deve consultar a OpenWeather e retornar a temperatura atual, com o valor arredondado para cima e um emoji correspondente à condição climática.
 
@@ -136,13 +134,6 @@ Os seguintes testes devem ser executados antes da entrega:
 - [ ] Verificação do emoji correspondente ao clima.
 - [ ] Verificação de que não há credenciais reais no JSON exportado.
 
-## 10. Segurança
-
-Nenhuma chave de API ou token real deve ser publicado no repositório.
-
-As credenciais devem ser configuradas no n8n ou no ambiente de execução. Antes da publicação, o arquivo JSON exportado deve ser inspecionado para verificar a ausência de segredos.
-
-O arquivo `.env` deve permanecer fora do controle de versão.
 
 ## 11. Arquivos do projeto
 

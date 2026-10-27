@@ -1,0 +1,203 @@
+{
+  "name": "ClimaTempoInstagram",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -1056,
+        1232
+      ],
+      "id": "25851039-494b-4b72-801a-85b2f5dbd0b2",
+      "name": "Telegram Trigger",
+      "webhookId": "b95f3af0-5fbd-431f-92bc-ba65ebc9c2f8",
+      "credentials": {
+        "telegramApi": {
+          "id": "LzK75isdBSbTVm7e",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9e07e1e4-e905-4289-a98e-8de238f8ad21",
+              "name": "queue",
+              "value": "=\n{{ \n  (() => {\n    const partes = ($json.message?.text ?? '')\n      .trim()\n      .split(',')\n      .map(p => p.trim())\n      .filter(Boolean);\n\n    const cidade = partes[0]\n      .normalize('NFD')\n      .replace(/[\\u0300-\\u036f]/g, '')\n      .toLowerCase();\n\n    let pais = partes.length >= 3\n      ? partes[2]\n      : partes.length === 2 && partes[1].length !== 2\n        ? partes[1]\n        : 'br';\n\n    pais = pais\n      .normalize('NFD')\n      .replace(/[\\u0300-\\u036f]/g, '')\n      .toLowerCase();\n\n    return `${cidade},${pais}`;\n  })()\n}}\n",
+              "type": "string"
+            },
+            {
+              "id": "c755e5c5-eb6e-4b5a-8b01-5c19123ace91",
+              "name": "cidadeOriginal",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "129b4854-b541-443d-99ce-47f9fb650858",
+              "name": "chatId",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -832,
+        1232
+      ],
+      "id": "7d43712c-21b9-4f40-8fd0-e64903d4d2f4",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ $json.queue }}"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            },
+            {
+              "name": "lang",
+              "value": "pt_br"
+            },
+            {
+              "name": "appid",
+              "value": "={{ $env.OPENWEATHER_API_KEY }}"
+            },
+            {
+              "name": "queue",
+              "value": "={{ $json.queue }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -656,
+        1232
+      ],
+      "id": "25318f03-26f4-4075-8137-860cec9c8d62",
+      "name": "HTTP Request",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "❌ Cidade não encontrada. Use o formato Cidade, UF, BR (ex.: São Paulo, SP, BR).",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -304,
+        1328
+      ],
+      "id": "73a898e5-25ea-4163-9dca-9460c68231a1",
+      "name": "Send a text message1",
+      "webhookId": "188b5999-9564-4784-b1f4-3b348fc46604",
+      "credentials": {
+        "telegramApi": {
+          "id": "LzK75isdBSbTVm7e",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Edit Fields1').item.json.chatId }}",
+        "text": "={{ \n  (() => {\n    const clima = $json.weather[0];\n    const temperatura = Math.ceil($json.main.temp);\n    const cidade = $json.name;\n    const codigo = clima.icon;\n\n    let emoji = '🌡️';\n\n    if (codigo.startsWith('01')) {\n      emoji = codigo.endsWith('d') ? '☀️' : '🌙';\n    } else if (codigo.startsWith('02')) {\n      emoji = '🌤️';\n    } else if (codigo.startsWith('03')) {\n      emoji = '☁️';\n    } else if (codigo.startsWith('04')) {\n      emoji = '☁️';\n    } else if (codigo.startsWith('09') || codigo.startsWith('10')) {\n      emoji = '🌧️';\n    } else if (codigo.startsWith('11')) {\n      emoji = '⛈️';\n    } else if (codigo.startsWith('13')) {\n      emoji = '❄️';\n    } else if (codigo.startsWith('50')) {\n      emoji = '🌫️';\n    }\n\n    return `${emoji} A temperatura em ${cidade} é de ${temperatura}°C.`;\n  })()\n}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -320,
+        1120
+      ],
+      "id": "1f5fa81e-c7a7-4fd7-b333-1cb6cc2a4ab1",
+      "name": "Send a text message2",
+      "webhookId": "188b5999-9564-4784-b1f4-3b348fc46604",
+      "credentials": {
+        "telegramApi": {
+          "id": "LzK75isdBSbTVm7e",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "414ebd96-0f99-4016-9e83-3679673e154f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0be53a5c6e711047fa606490875d79f9cb7dca5355ce5ff9d2455952e7be6f40"
+  },
+  "nodeGroups": [],
+  "id": "pw2uSNfM9c8Kx1m8",
+  "tags": []
+}
